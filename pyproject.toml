@@ -7,10 +7,11 @@ readme = "README.md"
 packages = [{include = "cardano_tx_builder"}]
 
 [tool.poetry.dependencies]
-python = ">=3.8.10, <3.12"
+python = ">=3.8.10, <3.11"
 pycardano = "^0.9.0"
 pyogmios = "^0.7.3"
 colorama = "^0.4.6"
+opshin = "^0.16.0"
 
 
 [build-system]

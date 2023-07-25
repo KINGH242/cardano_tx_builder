@@ -1,7 +1,6 @@
 import argparse
 import asyncio
 import os
-from typing import Union
 
 from blockfrost import ApiUrls
 from colorama import Fore
@@ -11,22 +10,20 @@ from pycardano import (
     Network,
     PaymentSigningKey,
     PaymentVerificationKey,
-    Transaction,
     TransactionBuilder,
     TransactionOutput,
     StakeVerificationKey
 )
-from pyogmios_client.connection import (
-    create_interaction_context,
-    InteractionContextOptions,
-)
-from pyogmios_client.enums import InteractionType
-from pyogmios_client.ouroboros_mini_protocols.tx_submission.tx_submission_client import create_tx_submission_client
+
+from submit_tx import send_tx
+
+BLOCKFROST_API_KEY = os.environ["BLOCKFROST_API_KEY"]
 
 
 async def main():
-    BLOCKFROST_API_KEY = os.environ["BLOCKFROST_API_KEY"]
-
+    """
+    Send ADA from one address to another.
+    """
     parser = argparse.ArgumentParser(description="Script to send ADA from one address to another.")
 
     parser.add_argument(
@@ -87,42 +84,12 @@ async def main():
 
     # online submit
     print("Submitting the transaction via PyOgmios...")
-    # send_tx(tx)
+    await send_tx(tx)
     print("DONE")
 
     print(
         f"Tracking: {Fore.GREEN}https://preprod.cardanoscan.io/transaction/{tx.id}{Fore.RESET}\n"
     )
-
-
-async def send_tx(tx: Union[Transaction, bytes, str]):
-    """
-    This run the tx submission client and print the output.
-    """
-    if isinstance(tx, Transaction):
-        tx_cbor = tx.to_cbor()
-    elif isinstance(tx, bytes):
-        tx_cbor = tx
-    else:
-        raise InvalidArgumentException(
-            f"Invalid transaction type: {type(tx)}, expected Transaction, bytes, or str"
-        )
-    interaction_context_options = InteractionContextOptions(
-        interaction_type=InteractionType.ONE_TIME, log_level="INFO"
-    )
-    interaction_context = await create_interaction_context(
-        options=interaction_context_options
-    )
-    await asyncio.sleep(1)
-    print(interaction_context.socket.sock.connected)
-
-    tx_submission_client = await create_tx_submission_client(
-        interaction_context
-    )
-
-    print("Submit Tx")
-    result = await tx_submission_client.submit_tx(tx_cbor)
-    print(f"Transaction submission result: {result}")
 
 
 if __name__ == "__main__":
