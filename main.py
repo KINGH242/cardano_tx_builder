@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import os
+from typing import Union
 
 from blockfrost import ApiUrls
 from colorama import Fore
@@ -11,12 +12,9 @@ from pycardano import (
     PaymentSigningKey,
     PaymentVerificationKey,
     Transaction,
-    TransactionBody,
     TransactionBuilder,
-    TransactionInput,
     TransactionOutput,
-    TransactionWitnessSet,
-    VerificationKeyWitness, StakeVerificationKey
+    StakeVerificationKey
 )
 from pyogmios_client.connection import (
     create_interaction_context,
@@ -32,7 +30,7 @@ async def main():
     parser = argparse.ArgumentParser(description="Script to send ADA from one address to another.")
 
     parser.add_argument(
-        "-s",
+        "-a",
         "--amount-to-send",
         help="The amount of ADA to send in lovelace.",
         type=int,
@@ -87,14 +85,15 @@ async def main():
     # Show the TxID
     print(f"TxID is: {Fore.GREEN}{tx.id}{Fore.RESET}")
 
-    online submit
+    # online submit
     print("Submitting the transaction via PyOgmios...")
-    send_tx(tx)
+    # send_tx(tx)
     print("DONE")
 
     print(
         f"Tracking: {Fore.GREEN}https://preprod.cardanoscan.io/transaction/{tx.id}{Fore.RESET}\n"
     )
+
 
 async def send_tx(tx: Union[Transaction, bytes, str]):
     """
@@ -129,4 +128,3 @@ async def send_tx(tx: Union[Transaction, bytes, str]):
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
-
