@@ -18,3 +18,13 @@ Run `poetry` commands from this same directory to manage your development enviro
 
 
 See [Poetry Docs](https://python-poetry.org/docs/cli/) for more info.
+
+## Examples
+
+```shell
+poetry run python main.py -h
+```
+
+```shell 
+poetry run python main.py -s full_test -a 1000000 -r addr_testtherestoftheaddresswouldbehere1
+```
